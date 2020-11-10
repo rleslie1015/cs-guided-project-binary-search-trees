@@ -49,7 +49,7 @@ class TreeNode:
         self.value = value
         self.left = left
         self.right = right
-​
+
 # is this function expecting an answer? 
 def is_valid_BST(root):
     # Your code here
@@ -65,7 +65,7 @@ def is_valid_BST(root):
             # return False 
     # otherwise, return True 
     return recurse(root, float('-inf'), float('inf'))
-​
+
 def recurse(root, min_bound, max_bound):
     # base case(s) 
     # check the current value against the range 
@@ -80,6 +80,50 @@ def recurse(root, min_bound, max_bound):
     left = recurse(root.left, min_bound, root.value - 1)
     # recurse with the right child and update the range 
     right = recurse(root.right, root.value + 1, max_bound)
-​
+
     # if either left or right is False, return False 
     return left and right 
+
+
+from typing import List
+# Alternative strategy, use in-order ordering 
+# if the BST is valid, then an in-order traversal will produce 
+# a sorted array 
+def in_order_traverse(root, result):
+    if root is None:
+        return 
+    in_order_traverse(root.left, result)
+    result.append(root.value)
+    in_order_traverse(root.right, result)
+
+def is_sorted(elements: List[int]) -> bool:
+    # traverse elements two at a time 
+    for i in range(1, len(elements)):
+        if elements[i] < elements[i-1]:
+            return False 
+    return True 
+
+# O(n + n) ~ O(2 * n) ~ O(n)
+def is_valid_BinaryST(root) -> bool:
+    elements = []
+    # all traversals are visiting every node in the tree 
+    # since we're visiting every node in the tree, O(n)
+    in_order_traverse(root, elements)
+    print(elements)
+    return is_sorted(elements) # O(n)
+
+'''
+    10
+   /  \
+  2   18
+      / \
+     6  21
+'''
+bst = TreeNode(10)
+bst.left = TreeNode(2)
+bst.right = TreeNode(18)
+bst.right.left = TreeNode(6)
+bst.right.right = TreeNode(21)
+
+print(is_valid_BST(bst))
+print(is_valid_BinaryST(bst))
